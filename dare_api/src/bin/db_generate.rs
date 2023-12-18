@@ -11,14 +11,7 @@ async fn run() -> Result<Output, DbErr> {
     let db_url = dotenv!("DATABASE_URL");
     println!("DATABASE_URL: {}", db_url);
     let output = Command::new("sea-orm-cli")
-        .args([
-            "generate",
-            "entity",
-            "--database-url",
-            db_url,
-            "--output-dir",
-            "src/entities",
-        ])
+        .args(["generate", "entity", "-0", "entity/src"])
         .output()
         .expect("failed to execute process");
     println!("status: {}", output.status);

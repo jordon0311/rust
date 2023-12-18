@@ -11,7 +11,7 @@ async fn run() -> Result<Output, DbErr> {
     let db_url = dotenv!("DATABASE_URL");
     println!("DATABASE_URL: {}", db_url);
     let output = Command::new("sea-orm-cli")
-        .args(["migrate", "refresh"])
+        .args(["migrate", "up"])
         .output()
         .expect("failed to execute process");
     println!("status: {}", output.status);
