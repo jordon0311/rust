@@ -1,0 +1,11 @@
+services:
+  core_postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dare-core
+    command: -c fsync=off -c full_page_writes=off -c synchronous_commit=off -c max_connections=500
+    ports:
+      - 10001:5432
+    container_name: dare-core-db
