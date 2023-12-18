@@ -1,20 +1,12 @@
-#[macro_use]
-extern crate dotenv_codegen;
-
-mod entities;
-
-use dotenv::dotenv;
-use entities::{prelude::*, *};
-use futures::executor::block_on;
 use sea_orm::*;
 
 const DATABASE_URL: &str = dotenv!("POSTGRES_URL");
 const DB_NAME: &str = dotenv!("POSTGRES_DB");
 
-async fn run() -> Result<(), DbErr> {
+pub(super) async fn set_up_db() -> Result<DatabaseConnection, DbErr> {
     let db = Database::connect(DATABASE_URL).await?;
 
-    let db = &match db.get_database_backend() {
+    let db = match db.get_database_backend() {
         // This isn't used. The DB is postgres
         DbBackend::MySql => {
             db.execute(Statement::from_string(
@@ -47,23 +39,5 @@ async fn run() -> Result<(), DbErr> {
         DbBackend::Sqlite => db,
     };
 
-    // Create a dare
-    let first_dare = dare::ActiveModel {
-        title: ActiveValue::Set("I dare you to...".to_owned()),
-        description: ActiveValue::Set("Touch your nose!".to_owned()),
-        author: ActiveValue::Set("Dare Master".to_owned()),
-        ..Default::default()
-    };
-    let res = Dare::insert(first_dare).exec(db).await?;
-
-    Ok(())
-}
-
-#[tokio::main]
-async fn main() {
-    dotenv().ok();
-    println!("{}", dotenv!("POSTGRES_URL"));
-    if let Err(err) = block_on(run()) {
-        panic!("{}", err);
-    }
+    Ok(db)
 }
