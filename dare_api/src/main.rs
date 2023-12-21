@@ -2,16 +2,27 @@
 extern crate dotenv_codegen;
 
 mod setup;
+mod cors;
 
-use entity::dare;
-use rocket::{serde::json::Json, *};
-use sea_orm::{ActiveModelTrait, ActiveValue, DatabaseConnection, DbErr, EntityTrait};
+use entity::dare::{ self };
+use rocket::{ serde::json::Json, * };
+use sea_orm::{ ActiveModelTrait, ActiveValue, DatabaseConnection, DbErr, EntityTrait };
+use ::serde::Serialize;
 use setup::establish_connection;
+use rocket::http::Method;
+use rocket_cors::{ AllowedOrigins, CorsOptions };
 
 #[derive(Responder)]
 #[response(status = 500, content_type = "json")]
 struct ErrorResponder {
     message: String,
+}
+
+#[derive(Debug, Serialize)]
+struct Dare {
+    id: i32,
+    title: String,
+    description: String,
 }
 
 impl From<DbErr> for ErrorResponder {
@@ -34,23 +45,38 @@ impl From<&str> for ErrorResponder {
     }
 }
 
+#[options("/")]
+async fn cors_preflight() -> Result<&'static str, ErrorResponder> {
+    Ok("OK")
+}
 #[get("/")]
-async fn index() -> &'static str {
-    "Hello, API!"
+async fn index() -> Result<Json<Dare>, ErrorResponder> {
+    let dare = {
+        Dare {
+            id: 1,
+            title: "Test".to_owned(),
+            description: "Test".to_owned(),
+        }
+    };
+    Ok(Json(dare))
 }
 
 #[get("/dares")]
-async fn get_dares(db: &State<DatabaseConnection>) -> Result<Json<Vec<String>>, ErrorResponder> {
+async fn get_dares(db: &State<DatabaseConnection>) -> Result<Json<Vec<Dare>>, ErrorResponder> {
     let db = db as &DatabaseConnection;
 
-    let all_dares = dare::Entity::find()
-        .all(db)
-        .await
+    let all_dares = dare::Entity
+        ::find()
+        .all(db).await
         .map_err(ErrorResponder::from)?
         .into_iter()
-        .map(|dare| dare.description)
-        .collect::<Vec<String>>();
-
+        .map(|dare| Dare {
+            id: dare.id,
+            title: dare.title,
+            description: dare.description,
+        })
+        .collect::<Vec<Dare>>();
+    println!("Found dares: {:?}", all_dares);
     Ok(Json(all_dares))
 }
 
@@ -59,7 +85,7 @@ async fn create_dare(
     db: &State<DatabaseConnection>,
     title: &str,
     description: &str,
-    author: &str,
+    author: &str
 ) -> Result<(), ErrorResponder> {
     let db = db as &DatabaseConnection;
 
@@ -82,7 +108,17 @@ async fn rocket() -> _ {
         Ok(db) => db,
         Err(err) => panic!("{}", err),
     };
-    rocket::build()
+
+    let cors = CorsOptions::default()
+        .allowed_origins(AllowedOrigins::all())
+        .allowed_methods(
+            vec![Method::Get, Method::Post, Method::Patch].into_iter().map(From::from).collect()
+        )
+        .allow_credentials(true);
+
+    rocket
+        ::build()
+        .attach(cors.to_cors().unwrap())
         .manage(db)
-        .mount("/", routes![index, get_dares, create_dare])
+        .mount("/", routes![cors_preflight, index, get_dares, create_dare])
 }
