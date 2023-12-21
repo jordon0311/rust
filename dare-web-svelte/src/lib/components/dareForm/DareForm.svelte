@@ -2,8 +2,7 @@
 </script>
 
 <div class="container p-8">
-  <form
-    class="card p-4 w-full bg-gradient-to-br variant-outline-primary space-y-2 sm:space-y-4">
+  <form class="card p-4 w-full variant-outline-primary space-y-2 sm:space-y-4">
     <h1 class="h2">
       <span
         class="bg-gradient-to-br variant-gradient-secondary-tertiary bg-clip-text text-transparent box-decoration-clone"

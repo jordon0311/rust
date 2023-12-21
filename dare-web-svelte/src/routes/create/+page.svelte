@@ -2,9 +2,8 @@
   import DareForm from "$lib/components/dareForm/DareForm.svelte";
 </script>
 
-<!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
-
 <div class="container h-full mx-auto flex justify-center items-center">
+  <section class="img-bg" />
   <DareForm />
 </div>
 
@@ -20,7 +19,7 @@
     @apply absolute z-[-1] rounded-full blur-[50px] transition-all;
     animation:
       pulse 5s cubic-bezier(0, 0, 0, 0.5) infinite,
-      glow 5s linear infinite;
+      glow 3s linear infinite;
   }
   @keyframes glow {
     0% {
@@ -38,7 +37,7 @@
   }
   @keyframes pulse {
     50% {
-      transform: scale(1.5);
+      transform: scale(3, 2);
     }
   }
 </style>
