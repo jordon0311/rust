@@ -1,3 +1,5 @@
+# [ABANDONED]
+
 # Yew Trunk Template
 
 This is a fairly minimal template for a Yew app that's built with [Trunk].
@@ -69,6 +71,6 @@ Finally, you should update this very `README` file to be about your app.
 The template ships with both the Apache and MIT license.
 If you don't want to have your app dual licensed, just remove one (or both) of the files and update the `license` field in `Cargo.toml`.
 
-There are two empty spaces in the MIT license you need to fill out: `` and `jordon0311 <95312014+jordon0311@users.noreply.github.com>`.
+There are two empty spaces in the MIT license you need to fill out: ``and`jordon0311 <95312014+jordon0311@users.noreply.github.com>`.
 
 [trunk]: https://github.com/thedodd/trunk
