@@ -4,6 +4,7 @@ type Dare = {
   id: number;
   title: string;
   description: string;
+  author: string;
 };
 
 export const load: PageLoad = async ({ fetch }) => {
