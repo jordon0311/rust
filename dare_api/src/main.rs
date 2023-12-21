@@ -2,7 +2,6 @@
 extern crate dotenv_codegen;
 
 mod setup;
-mod cors;
 
 use entity::dare::{ self };
 use rocket::{ serde::json::Json, * };
