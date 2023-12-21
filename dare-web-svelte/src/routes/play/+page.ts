@@ -1,11 +1,18 @@
 import type { PageLoad } from "./$types";
+
+type Dare = {
+  id: number;
+  title: string;
+  description: string;
+};
+
 export const load: PageLoad = async ({ fetch }) => {
   const optionsBuilder = {
     headers: new Headers(),
   };
   optionsBuilder.headers.append("content-type", "application/json");
   const rawResponse: Response = await fetch(
-    new Request("http://127.0.0.1:8000", {
+    new Request("http://127.0.0.1:8000/dares", {
       method: "GET",
       keepalive: true,
       mode: "cors",
@@ -13,11 +20,6 @@ export const load: PageLoad = async ({ fetch }) => {
       ...optionsBuilder,
     })
   );
-  console.log({ rawResponse });
-  const { ok, status, redirected, type, url } = rawResponse;
-  console.log({ ok, status, redirected, type, url });
-  const blah = await rawResponse.text();
-  console.log({ blah });
-  const items = {};
-  return { items };
+  const dares: Dare[] = await rawResponse.json();
+  return { dares };
 };

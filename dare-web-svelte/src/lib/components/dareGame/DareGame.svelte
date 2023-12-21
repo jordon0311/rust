@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ArrowRightSolid } from "flowbite-svelte-icons";
-  let dare = {
+  export let dare = {
     title: "I dare you to...",
     description: "Dance like a robot for 30 seconds!",
     author: "Jordon",

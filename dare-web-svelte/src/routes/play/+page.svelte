@@ -1,10 +1,12 @@
-<script>
+<script lang="ts">
   import DareGame from "$lib/components/dareGame/DareGame.svelte";
+  import type { PageData } from "./$types";
+  export let data: PageData;
 </script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
   <section class="img-bg" />
-  <DareGame />
+  <DareGame dare={data.dares[0]} />
 </div>
 
 <style lang="postcss">

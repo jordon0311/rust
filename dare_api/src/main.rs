@@ -22,6 +22,7 @@ struct Dare {
     id: i32,
     title: String,
     description: String,
+    author: String,
 }
 
 impl From<DbErr> for ErrorResponder {
@@ -55,6 +56,7 @@ async fn index() -> Result<Json<Dare>, ErrorResponder> {
             id: 1,
             title: "Test".to_owned(),
             description: "Test".to_owned(),
+            author: "Test".to_owned(),
         }
     };
     Ok(Json(dare))
@@ -73,6 +75,7 @@ async fn get_dares(db: &State<DatabaseConnection>) -> Result<Json<Vec<Dare>>, Er
             id: dare.id,
             title: dare.title,
             description: dare.description,
+            author: dare.author,
         })
         .collect::<Vec<Dare>>();
     println!("Found dares: {:?}", all_dares);
